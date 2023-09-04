@@ -14,85 +14,27 @@
 
 // Your code starts here.
 
-//defined('ABSPATH') || exit;
+defined('ABSPATH') || exit;
 
 define('LPT_PLUGIN_FILE', __FILE__);
+define('LPT_PLUGIN_PATH', untrailingslashit( plugin_dir_path( LPT_PLUGIN_FILE) ));
+define('LPT_PLUGIN_URL', untrailingslashit( plugins_url( '/', LPT_PLUGIN_FILE) ));
 
-final class Plugin
-{
-	private $version = "0.1.0";
-
-	private static $_instance = null;
-
-	/**
-	 * The Singleton's constructor should always be private to prevent direct
-	 * construction calls with the `new` operator.
-	 */
-	protected function __construct() { }
-
-	/**
-	 * Singletons should not be cloneable.
-	 */
-	protected function __clone() { }
-
-	/**
-	 * Singletons should not be restorable from strings.
-	 */
-	protected function __wakeup() { }
-
-	public static function getInstance() : ?Plugin
-	{
-		if (is_null(self::$_instance)) {
-			self::$_instance = new self();
-		}
-
-		return self::$_instance;
-	}
-
-	public function checkInstance()
-	{
-		echo "Este é o Objeto " , spl_object_id($this) , " da classe plugin versão " , $this->getVersion() , "\n";
-	}
-
-	/**
-	* @return string
-	**/
-	public function getVersion() : string
-	{
-		return $this->version;
-	}
-
-	/**
-	* @param string $version
-	**/
-	public function setVersion(string $version) : void
-	{
-		$this->version = $version;
-	}
-}
+require_once LPT_PLUGIN_PATH . '/includes/Plugin.php';
 
 if (class_exists('Plugin')) {
-
 	function LPT()
 	{
 		return Plugin::getInstance();
 	}
 
-	$plugin = LPT();
+	add_action('plugins_loaded',array(LPT(),'init'));
 
-	$plugin_2 = LPT();
-	$plugin_2->setVersion("1.0.0");
+	//activation
+	register_activation_hook(LPT_PLUGIN_FILE, array($plugin, 'activate'));
 
-	$plugin->checkInstance();
-	$plugin_2->checkInstance();
-
-	if ($plugin == $plugin_2) {
-		echo "nós somos iguais";
-	}
+	//deactivation
+	register_deactivation_hook(LPT_PLUGIN_FILE, array($plugin, 'deactivate'));
 }
 
-// //activation
-// register_activation_hook(LPT_PLUGIN_FILE, array($plugin, 'activate'));
 
-// //deactivation
-// register_deactivation_hook(LPT_PLUGIN_FILE, array($plugin, 'deactivate'));
