@@ -1,7 +1,7 @@
 <?php
 
-use LPT\Activate;
-use LPT\Deactivate;
+use LPT\Includes\Activate;
+use LPT\Includes\Deactivate;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,7 +17,6 @@ final class Plugin
 	 */
 	protected function __construct()
 	{
-		$this->autoloader();
 	}
 
 	/**
@@ -54,9 +53,4 @@ final class Plugin
 		Deactivate::deactivate();
 	}
 
-	private function autoloader() {
-		require_once LPT_PLUGIN_PATH . '/includes/Autoloader.php';
-
-		Autoloader::exec();
-	}
 }
